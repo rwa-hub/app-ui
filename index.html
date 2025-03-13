@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/src/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite App</title>
+  <style>
+    /* styles/global.css */
+    :root {
+      /* 🎨 Cores Principais */
+      --primary: #ff2a6d;
+      --secondary: #dff7ff;
+      --accent: #00ffff;
+
+      --semanticSuccess: #22D1F8;
+      --semanticError: #FF4EA3;
+      --semanticWarning: #FED33A;
+      --semanticNeutral: #ABC4FF;
+      --semanticFocus: #A259FF;
+      --semanticFocusShadow: #A259FF33;
+
+      /* 🎨 Fundos */
+      --background-dark: #01012b;
+      --background-medium: #005678;
+      --background-light: #09142e;
+      --background-light50: rgba(9, 20, 46, 0.5);
+      --background-light30: rgba(9, 20, 46, 0.3);
+
+      /* 🎨 Textos */
+      --text-primary: #dff7ff;
+      --text-secondary: #ff2a6d;
+      --text-tertiary: #dff7ff80;
+      --text-revert-primary: #01012b;
+      --text-link: #00ffff;
+
+      /* 🎨 Botões */
+      --button-primary: #00ffff;
+      --button-primary__01: #ff2a6d;
+      --button-primary__02: #dff7ff;
+      --button-solid-text: #01012b;
+      --button-secondary: #005678;
+
+      /* 🎨 Switches */
+      --switch-on: #00ffff;
+      --switch-off: #dff7ff;
+
+      /* 🎨 Select */
+      --select-active: #ff2a6d;
+      --select-active-secondary: #00ffff;
+      --select-inactive: #dff7ff1a;
+
+      /* 🎨 Gráficos */
+      --chart01: #ff2a6d;
+      --chart02: #00ffff;
+      --chart03: #dff7ff;
+      --chart04: #2b6aff;
+      --chart05: #ff7043;
+      --chart06: #fed33a;
+      --chart07: #4f53f3;
+      --chart08: #22d1f8;
+      --chart09: #8c6eef33;
+
+      /* 🎨 Ícones */
+      --icon-bg: #8ca7e8;
+      --icon-empty-stroke: #01012b;
+
+      /* 🎨 Feedbacks de Status */
+      --semantic-success: #00ffff;
+      --semantic-error: #ff2a6d;
+      --semantic-warning: #fed33a;
+      --semantic-neutral: #dff7ff;
+      --semantic-focus: #a259ff;
+      --semantic-focus-shadow: #a259ff33;
+
+      /* 🎨 Outros */
+      --popover-bg: #09142e;
+      --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+      --divider-bg: rgba(255, 42, 109, 0.12);
+
+      /* 🎨 Gradientes */
+      --background-app: linear-gradient(180deg, #01012b 0%, #09142e 50%, #005678 100%);
+      --solid-button-bg: linear-gradient(90deg, #ff2a6d 0%, #00ffff 100%);
+      --outline-button-bg: linear-gradient(90deg, rgba(255, 42, 109, 0.1) 0%, rgba(0, 255, 255, 0.1) 100%);
+      --filled-progress-bg: linear-gradient(90deg, #ff2a6d 0%, #dff7ff 100%);
+      --modal-container-bg: #ff2a6d12;
+      --panel-card-shadow: 0px 8px 24px rgba(255, 42, 109, 0.12);
+      --panel-card-border: unset;
+    }
+
+    /* Aplica fundo escuro global */
+    body {
+      background-color: var(--background-dark);
+      color: var(--text-primary);
+      font-family: "Poppins", sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

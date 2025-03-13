@@ -1,0 +1,6 @@
+[2025-03-13T20:37:29.189Z] [INFO]: Created .gfs_ignore. You can extend this with more ignore patterns.
+[2025-03-13T20:37:29.190Z] [INFO]: Created .gfs_include. You can add patterns to override exclusions.
+[2025-03-13T20:37:29.192Z] [INFO]: Ignoring: .git
+[2025-03-13T20:37:29.193Z] [INFO]: Ignoring: node_modules
+[2025-03-13T20:37:29.193Z] [INFO]: Ignoring: gfs
+[2025-03-13T20:37:29.195Z] [INFO]: Folder structure written to: /Users/hub/Documents/Development/rwa-hub/app-ui/docs/project_structure.txt
