@@ -1,37 +1,61 @@
-import { Flex, Text, Spacer, Box, HStack, Icon } from "@chakra-ui/react";
-import { Avatar } from "@chakra-ui/avatar";
-import { motion } from "framer-motion";
-import { FiBell } from "react-icons/fi";
-
-const MotionFlex = motion(Flex);
+import { Flex, Text, Spacer, HStack, Icon, Avatar } from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
+import { FiActivity, FiDatabase, FiUsers, FiCheckCircle, FiSettings } from "react-icons/fi";
+import { MdOutlineRealEstateAgent } from "react-icons/md";
 
 export const Header = () => {
   return (
-    <MotionFlex
+    <Flex
       as="header"
-      bg="var(--background-dark)"
+      // bg="var(--background-dark)"
       p={4}
       align="center"
-      borderBottom="2px solid var(--accent)"
+      borderBottom="1px solid var(--accent)"
       boxShadow="0px 0px 20px var(--accent)"
       color="var(--text-primary)"
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, ease: "easeOut" }}
     >
-      <Text
-        fontSize="2xl"
-        fontWeight="bold"
-        color="blue.200"
-        textShadow="0px 0px 15px var(--primary)"
-      >
-        Painel de Controle
+      <Text fontSize="2xl" fontWeight="bold" color="var(--text-link)" textShadow="0px 0px 15px var(--text-link)">
+        <Icon as={MdOutlineRealEstateAgent} boxSize={50} color="var(--accent)" />
       </Text>
+
       <Spacer />
-      <HStack spacing={4}>
-        <Icon as={FiBell} boxSize={6} color="var(--primary)" cursor="pointer" />
-        <Avatar name="Usuário" boxShadow="0px 0px 10px var(--accent)" border="2px solid var(--primary)" />
+
+      <HStack spacing={6}>
+        <NavLink to="/dashboard/events">
+          <HStack cursor="pointer">
+            <Icon as={FiActivity} boxSize={5} color="var(--text-primary)" />
+            <Text color="var(--text-primary)">Eventos</Text>
+          </HStack>
+        </NavLink>
+        <NavLink to="/dashboard/tokens">
+          <HStack cursor="pointer">
+            <Icon as={FiDatabase} boxSize={5} color="var(--text-primary)" />
+            <Text color="var(--text-primary)">Tokens</Text>
+          </HStack>
+        </NavLink>
+        <NavLink to="/dashboard/agents">
+          <HStack cursor="pointer">
+            <Icon as={FiUsers} boxSize={5} color="var(--text-primary)" />
+            <Text color="var(--text-primary)">Agentes</Text>
+          </HStack>
+        </NavLink>
+        <NavLink to="/dashboard/approve-buyer">
+          <HStack cursor="pointer">
+            <Icon as={FiCheckCircle} boxSize={5} color="var(--text-primary)" />
+            <Text color="var(--text-primary)">Aprovar Comprador</Text>
+          </HStack>
+        </NavLink>
+        <NavLink to="/dashboard/kyc">
+          <HStack cursor="pointer">
+            <Icon as={FiSettings} boxSize={5} color="var(--text-primary)" />
+            <Text color="var(--text-primary)">KYC</Text>
+          </HStack>
+        </NavLink>
       </HStack>
-    </MotionFlex>
+
+      <Spacer />
+
+      <Avatar name="Usuário" boxShadow="0px 0px 10px var(--rose)" border="2px solid var(--rose)" />
+    </Flex>
   );
 };
