@@ -1,39 +1,44 @@
-import { Box, Flex, Text, Avatar, VStack, HStack, Button, Icon, Spacer, Image } from "@chakra-ui/react";
+import { Box, VStack, Image, Button } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { FiActivity, FiHome, FiSettings, FiBell } from "react-icons/fi";
+import { NavLink } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
 // Motion Components para animações suaves
 const MotionBox = motion(Box);
-// const MotionFlex = motion(Flex);
 
 export const Sidebar = () => {
-
-
-
   return (
     <MotionBox
       as="aside"
       w="260px"
       bg="var(--background-dark)"
       h="100vh"
-      boxShadow="0px 0px 20px var(--accent)"
+      boxShadow="0px 0px 10px var(--accent)"
       borderRight="2px solid var(--accent)"
       initial={{ x: -260 }}
       animate={{ x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <VStack p={6} spacing={6} align="start">
-        <Image src={logo} alt="Logo" w="250px" h="210px" />
-        <Button leftIcon={<FiHome />} variant="ghost" colorScheme="blue">
-          Início
-        </Button>
-        <Button leftIcon={<FiActivity />} variant="ghost" colorScheme="blue">
-          Eventos
-        </Button>
-        <Button leftIcon={<FiSettings />} variant="ghost" colorScheme="blue">
-          Configurações
-        </Button>
+      <VStack p={4} spacing={1} align="start"> 
+        <Image src={logo} alt="Logo" w="180px" mb={2} />
+
+        <NavLink to="/dashboard/rwa">
+          <Button variant="ghost" colorScheme="blue" w="full">
+            RWA
+          </Button>
+        </NavLink>
+
+        <NavLink to="/dashboard/about">
+          <Button variant="ghost" colorScheme="blue" w="full">
+            About
+          </Button>
+        </NavLink>
+
+        <NavLink to="/dashboard/docs">
+          <Button variant="ghost" colorScheme="blue" w="full">
+            Docs
+          </Button>
+        </NavLink>
       </VStack>
     </MotionBox>
   );
