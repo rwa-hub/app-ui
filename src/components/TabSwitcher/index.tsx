@@ -12,6 +12,7 @@ export const TabSwitcher = ({ tabs, children }: TabSwitcherProps) => {
       <TabList bg="var(--background-medium)" p={2} borderRadius="lg">
         {tabs.map((tab, index) => (
           <Tab
+          color="var(--primary)" 
             key={index}
             _selected={{ color: "var(--primary)", bg: "var(--background-light)" }}
           >

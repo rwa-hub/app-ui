@@ -59,7 +59,7 @@ export const EventItem = ({ event }: EventItemProps) => {
             <Text fontSize="lg" fontWeight="bold" color={color}>
               {title}
             </Text>
-            <Text fontSize="sm" color="var(--text-secondary)">
+            <Text fontSize="sm" color="var(--text-primary)">
               {event.timestamp && !isNaN(new Date(event.timestamp).getTime()) 
                 ? format(new Date(event.timestamp), "dd/MM/yyyy HH:mm:ss") 
                 : "🔴 Data inválida"}
