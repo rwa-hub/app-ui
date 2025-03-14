@@ -61,7 +61,7 @@ const renderEventDetails = (eventData: Record<string, any>) => {
     return (
       <Box key={key} display="flex" justifyContent="space-between" w="100%" p={2} borderBottom="1px solid var(--background-light)">
         <Text fontWeight="bold" color="var(--text-primary)">{key}:</Text>
-        <Text color="var(--text-secondary)">{displayValue}</Text>
+        <Text color="var(--accent)">{displayValue}</Text>
       </Box>
     );
   });
