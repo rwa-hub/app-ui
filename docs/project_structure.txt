@@ -1,9 +1,34 @@
 [docs]
+  - project_structure.txt
 [src]
+  [assets]
+    - logo.png
   [components]
-    - color-mode-toggle.tsx
+    [ButtonNeon]
+      - index.tsx
+    [Card]
+      - index.tsx
+    [EventChart]
+      - index.tsx
+    [EventList]
+      - EventItem.tsx
+      - index.tsx
+    [Header]
+      - index.tsx
+    [Input]
+      - index.tsx
+    [Sidebar]
+      - index.tsx
+  [hooks]
+    - useWeebSocket.ts
+  [pages]
+    [EventRecents]
+      - index.tsx
+    - index.tsx
   [providers]
     - ThemeProvider.tsx
+  [shared]
+    - Layout.tsx
   [theme]
     [components]
       - Alert.ts
@@ -43,7 +68,6 @@
       - breakpoints.ts
       - fontSize.ts
       - radii.ts
-    - config.ts
     - cssBlocks.ts
     - detailConfig.ts
     - theme.ts
