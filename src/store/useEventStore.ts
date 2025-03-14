@@ -2,6 +2,11 @@ import { create } from "zustand";
 import axios from "axios";
 import { EventData } from "./event-types";
 import { io, Socket } from "socket.io-client";
+import { createStandaloneToast } from "@chakra-ui/react";
+import { statusColors } from "@/utils/toast-neon";
+
+const { toast } = createStandaloneToast();
+
 
 interface EventStore {
   realTimeEvents: EventData[];
@@ -28,7 +33,7 @@ export const useEventStore = create<EventStore>((set, get) => ({
   eventType: "",
   contractAddress: "",
 
-  // 🔥 Buscar histórico da API (com filtros)
+
   fetchHistory: async (collection, page = 1, limit = 10, eventType = "", contractAddress = "") => {
     set({ loading: true });
 
@@ -52,20 +57,20 @@ export const useEventStore = create<EventStore>((set, get) => ({
     }
   },
 
-  // 🔍 Aplicar filtros e recarregar histórico
+
   setFilters: (eventType, contractAddress) => {
     set({ eventType, contractAddress, currentPage: 1 });
     get().fetchHistory("token_rwa", 1, 10, eventType, contractAddress);
   },
 
-  // 📌 Mudar página e carregar novos eventos automaticamente
+
   setCurrentPage: (page: number) => {
     set({ currentPage: page });
     const { eventType, contractAddress } = get();
     get().fetchHistory("token_rwa", page, 10, eventType, contractAddress);
   },
 
-  // 🔵 Adicionar eventos em tempo real
+
   addRealTimeEvent: (event: EventData) => {
     if (!event.eventType || !event.timestamp || !event.transactionHash) {
       return;
@@ -74,9 +79,28 @@ export const useEventStore = create<EventStore>((set, get) => ({
     set((state) => ({
       realTimeEvents: [...state.realTimeEvents, event].slice(-50),
     }));
+
+
+    const eventColor = statusColors[event.eventType as keyof typeof statusColors] || "#ABC4FF";
+
+
+    toast({
+      title: `📩 Novo Evento Recebido!`,
+      description: `🆔 ${event.eventType} - ${event.transactionHash.slice(0, 6)}...${event.transactionHash.slice(-4)}`,
+      status: "info",
+      position: "top-right",
+      duration: 5000,
+      isClosable: true,
+      containerStyle: {
+        background: "var(--background-dark)",
+        border: `2px solid ${eventColor}`,
+        color: "var(--text-primary)",
+        boxShadow: `0px 0px 15px ${eventColor}`,
+      },
+    });
   },
 
-  // ⚡ Conectar ao Socket.IO
+
   connectSocketIO: () => {
     console.log("🔌 Tentando conectar ao Socket.IO...");
 
@@ -103,7 +127,7 @@ export const useEventStore = create<EventStore>((set, get) => ({
     });
   },
 
-  // 🔵 Conectar ao WebSocket puro (ws://)
+
   connectWebSocket: () => {
     console.log("🔌 Tentando conectar ao WebSocket...");
 
