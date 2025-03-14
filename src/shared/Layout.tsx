@@ -1,20 +1,24 @@
-// src/components/Layout.tsx
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Sidebar } from "@/components/Sidebar";
 import { Box, Flex } from "@chakra-ui/react";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+import { Outlet } from "react-router-dom";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+export const Dashboard = () => {
   return (
-    <Flex h="100vh" bg="backgroundDark">
+    <Flex direction="row" minH="100vh">
       <Sidebar />
-      <Box flex="1" display="flex" flexDirection="column">
+      <Flex direction="column" flex="1" bg="var(--background-app)" minH="100vh">
         <Header />
-        <Box flex="1" p={6} bg="backgroundDark">
-          {children}
+        {/* Conteúdo da Dashboard */}
+        <Box flex="1" p={6} overflow="auto">
+          <Outlet />
         </Box>
-      </Box>
+        {/* Footer fixo abaixo do conteúdo */}
+        <Box as="footer" w="100%" bg="var(--background-medium)" p={4} textAlign="center" boxShadow="0px -2px 10px var(--rose)">
+          <Footer />
+        </Box>
+      </Flex>
     </Flex>
   );
 };
-
-export default Layout;
