@@ -1,31 +1,52 @@
 import { Box, Text, HStack, Icon, useDisclosure } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { ModalEventList } from "./ModalEventList";
-import { FiCheckCircle, FiXCircle, FiAlertTriangle, FiInfo } from "react-icons/fi";
+import { FiCheckCircle, FiXCircle, FiAlertTriangle, FiInfo, FiClock } from "react-icons/fi";
+import { EventData } from "@/store/event-types";
+import { format } from "date-fns";
 
 const MotionBox = motion(Box);
 
 interface EventItemProps {
-  event: {
-    id: number;
-    title: string;
-    description: string;
-    date: string;
-    status: "success" | "error" | "warning" | "neutral" | "focus";
-  };
+  event: EventData;
 }
 
+// 🔹 Ícones por status genérico
 const statusIcons = {
   success: { icon: FiCheckCircle, color: "var(--semanticSuccess)" },
   error: { icon: FiXCircle, color: "var(--semanticError)" },
   warning: { icon: FiAlertTriangle, color: "var(--semanticWarning)" },
   neutral: { icon: FiInfo, color: "var(--semanticNeutral)" },
-  focus: { icon: FiInfo, color: "var(--semanticFocus)" },
+};
+
+// 🔹 Formatar evento dinamicamente
+const formatEventDetails = (event: EventData) => {
+  return {
+    title: `📌 ${event.eventType || "Evento indefinido"}`,
+    description: Object.entries(event)
+      .filter(([key, value]) => 
+        value !== undefined && 
+        !["_id", "eventType", "timestamp", "contractAddress", "transactionHash", "blockNumber"].includes(key)
+      )
+      .map(([key, value]) => `${key}: ${value}`)
+      .join(" | ") || "📭 Evento sem informações",
+    status: "neutral" as keyof typeof statusIcons,
+  };
 };
 
 export const EventItem = ({ event }: EventItemProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { icon, color } = statusIcons[event.status];
+  const { title, description, status } = formatEventDetails(event);
+  const { icon, color } = statusIcons[status];
+
+  // 🕒 Verificar se o timestamp é válido
+  let formattedDate = "⏳ Aguardando confirmação...";
+  if (event.timestamp) {
+    const parsedDate = new Date(event.timestamp);
+    if (!isNaN(parsedDate.getTime())) {
+      formattedDate = format(parsedDate, "dd/MM/yyyy HH:mm:ss");
+    }
+  }
 
   return (
     <>
@@ -47,19 +68,21 @@ export const EventItem = ({ event }: EventItemProps) => {
           <Icon as={icon} boxSize={6} color={color} />
           <Box>
             <Text fontSize="lg" fontWeight="bold" color={color}>
-              {event.title}
+              {title}
             </Text>
             <Text fontSize="sm" color="var(--text-secondary)">
-              {event.date}
+              {formattedDate}
+            </Text>
+            <Text fontSize="sm" color="var(--text-secondary)">
+              {description}
             </Text>
           </Box>
         </HStack>
       </MotionBox>
 
-      {/* 🔹 Modal de Detalhes */}
-      <ModalEventList isOpen={isOpen} onClose={onClose} title={event.title} status={event.status}>
+      <ModalEventList isOpen={isOpen} onClose={onClose} title={title} status={status}>
         <Text fontSize="md" color="var(--text-secondary)">
-          {event.description}
+          {description}
         </Text>
       </ModalEventList>
     </>
