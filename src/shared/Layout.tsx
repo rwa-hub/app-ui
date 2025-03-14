@@ -10,12 +10,22 @@ export const Dashboard = () => {
       <Sidebar />
       <Flex direction="column" flex="1" bg="var(--background-app)" minH="100vh">
         <Header />
-        {/* Conteúdo da Dashboard */}
-        <Box flex="1" p={6} overflow="auto">
+
+        {/* 🔹 Área de Conteúdo Fixa, garantindo espaço para o Footer */}
+        <Box flex="1" p={6} display="flex" flexDirection="column" overflow="hidden">
           <Outlet />
         </Box>
-        {/* Footer fixo abaixo do conteúdo */}
-        <Box as="footer" w="100%" bg="var(--background-medium)" p={4} textAlign="center" boxShadow="0px -2px 10px var(--rose)">
+
+        {/* 🔹 Footer Fixo */}
+        <Box
+          as="footer"
+          w="100%"
+          bg="var(--background-medium)"
+          p={4}
+          textAlign="center"
+          boxShadow="0px -2px 10px var(--rose)"
+          position="relative"
+        >
           <Footer />
         </Box>
       </Flex>

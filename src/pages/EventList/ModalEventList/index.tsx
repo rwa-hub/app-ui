@@ -1,12 +1,23 @@
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  VStack,
+  Box,
+  Text,
+} from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { format } from "date-fns";
 
 interface ModalNeonProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   status?: "success" | "error" | "warning" | "neutral" | "focus";
-  children: React.ReactNode;
+  event: Record<string, unknown>; 
 }
 
 const statusColors = {
@@ -19,8 +30,45 @@ const statusColors = {
 
 const MotionModalContent = motion(ModalContent);
 
-export const ModalEventList = ({ isOpen, onClose, title, status = "neutral", children }: ModalNeonProps) => {
-  console.log("Modal aberto?", isOpen); 
+// 🔹 Formata endereços Ethereum (ex: 0x12...abcd)
+const formatAddress = (address: string) => {
+  return address.length > 10 ? `${address.slice(0, 6)}...${address.slice(-4)}` : address;
+};
+
+// 🔹 Formata timestamp para data e hora local
+const formatTimestamp = (timestamp: string) => {
+  const date = new Date(timestamp);
+  return isNaN(date.getTime()) ? "🔴 Data inválida" : format(date, "dd/MM/yyyy HH:mm:ss");
+};
+
+// 🔹 Renderiza todos os detalhes do evento no modal
+const renderEventDetails = (eventData: Record<string, any>) => {
+  return Object.entries(eventData).map(([key, value]) => {
+    let displayValue;
+
+    if (key === "timestamp") {
+      displayValue = formatTimestamp(value as string);
+    } else if (typeof value === "boolean") {
+      displayValue = value ? "✅ Sim" : "❌ Não";
+    } else if (typeof value === "number") {
+      displayValue = value.toLocaleString();
+    } else if (typeof value === "string" && value.startsWith("0x")) {
+      displayValue = formatAddress(value);
+    } else {
+      displayValue = value;
+    }
+
+    return (
+      <Box key={key} display="flex" justifyContent="space-between" w="100%" p={2} borderBottom="1px solid var(--background-light)">
+        <Text fontWeight="bold" color="var(--text-primary)">{key}:</Text>
+        <Text color="var(--text-secondary)">{displayValue}</Text>
+      </Box>
+    );
+  });
+};
+
+export const ModalEventList = ({ isOpen, onClose, title, status = "neutral", event }: ModalNeonProps) => {
+  console.log("Modal aberto?", isOpen);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -34,12 +82,17 @@ export const ModalEventList = ({ isOpen, onClose, title, status = "neutral", chi
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.3 }}
+        maxW="500px"
       >
         <ModalHeader color={statusColors[status]} textShadow={`0px 0px 15px ${statusColors[status]}`}>
           {title}
         </ModalHeader>
         <ModalCloseButton color="var(--text-primary)" />
-        <ModalBody>{children}</ModalBody>
+        <ModalBody>
+          <VStack spacing={3} align="stretch">
+            {renderEventDetails(event)}
+          </VStack>
+        </ModalBody>
       </MotionModalContent>
     </Modal>
   );

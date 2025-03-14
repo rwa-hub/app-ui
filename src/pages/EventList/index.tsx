@@ -1,10 +1,10 @@
-import { useEffect } from "react";
-import { useEventStore } from "@/store/useEventStore";
 import { Box, Text, VStack } from "@chakra-ui/react";
 import { TabSwitcher } from "@/components/TabSwitcher";
 import { Pagination } from "@/components/Pagination";
 import { EventItem } from "./EventItem";
 import { EventFilter } from "./EventFilter";
+import { useEventStore } from "@/store/useEventStore";
+import { useEffect } from "react";
 
 export const EventList = () => {
   const {
@@ -29,10 +29,10 @@ export const EventList = () => {
   return (
     <TabSwitcher tabs={["Tempo Real", "Histórico"]}>
       {/* 🔹 Tempo Real */}
-      <Box flex="1" overflowY="auto" p={2} borderRadius="md">
-        <VStack spacing={4} align="stretch">
-          {realTimeEvents.length > 0 ? (
-            realTimeEvents.map((event) => <EventItem key={event._id} event={event} />)
+      <Box flex="1" p={2} borderRadius="md" display="flex" flexDirection="column" maxH="60vh">
+        <VStack spacing={4} align="stretch" overflowY="auto" flex="1">
+          {(realTimeEvents ?? []).length > 0 ? (
+            realTimeEvents.map((event) => <EventItem key={event.transactionHash} event={event} />)
           ) : (
             <Text color="gray.500">Aguardando eventos...</Text>
           )}
@@ -40,15 +40,15 @@ export const EventList = () => {
       </Box>
 
       {/* 🔹 Histórico com filtros */}
-      <Box flex="1" overflowY="auto" p={2} borderRadius="md">
+      <Box flex="1" p={2} borderRadius="md" display="flex" flexDirection="column" maxH="60vh">
         <EventFilter />
         
         {loading ? (
           <Text color="gray.500">Carregando histórico...</Text>
         ) : (
-          <VStack spacing={4} align="stretch">
-            {historyEvents.length > 0 ? (
-              historyEvents.map((event) => <EventItem key={event._id} event={event} />)
+          <VStack spacing={4} align="stretch" overflowY="auto" flex="1">
+            {(historyEvents ?? []).length > 0 ? (
+              historyEvents.map((event) => <EventItem key={event.transactionHash} event={event} />)
             ) : (
               <Text color="gray.500">Nenhum evento encontrado.</Text>
             )}

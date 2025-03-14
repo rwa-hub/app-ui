@@ -14,13 +14,17 @@ export const EventFilter = () => {
   const [contractAddress, setContractAddress] = useState("");
 
   const applyFilters = () => {
-    fetchHistory("token_rwa", 1, 10);
+    fetchHistory("token_rwa", 1, 10, eventType, contractAddress);
   };
 
   return (
     <Box p={3} bg="gray.700" borderRadius="md" mb={4}>
       <HStack spacing={4}>
-        <Select placeholder="Tipo de Evento" value={eventType} onChange={(e) => setEventType(e.target.value)}>
+        <Select
+          placeholder="Tipo de Evento"
+          value={eventType}
+          onChange={(e) => setEventType(e.target.value)}
+        >
           {eventTypes.map((type) => (
             <option key={type} value={type}>
               {type}
@@ -28,7 +32,11 @@ export const EventFilter = () => {
           ))}
         </Select>
 
-        <Select placeholder="Contrato" value={contractAddress} onChange={(e) => setContractAddress(e.target.value)}>
+        <Select
+          placeholder="Contrato"
+          value={contractAddress}
+          onChange={(e) => setContractAddress(e.target.value)}
+        >
           {contractAddresses.map((address) => (
             <option key={address} value={address}>
               {address}
