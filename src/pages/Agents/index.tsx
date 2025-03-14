@@ -1,8 +1,13 @@
 
+import { AgentsStepper } from "./Stepper/AgentStepper";
+import { Box } from "@chakra-ui/react";
+
+
+
 export const Agents = () => {
     return (
-        <div>
-            <h1>Agents</h1>
-        </div>
+        <Box>
+            <AgentsStepper />
+        </Box>
     )
 }

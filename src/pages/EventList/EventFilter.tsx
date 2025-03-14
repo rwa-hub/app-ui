@@ -2,28 +2,74 @@ import { useState } from "react";
 import { useEventStore } from "@/store/useEventStore";
 import { Box, Select, Button, HStack } from "@chakra-ui/react";
 
-const eventTypes = ["AgentAdded", "Transfer", "BuyerApproved", "AddressFrozen", "Unpaused"];
-const contractAddresses = [
-  "0x2078faf714fb3727a66bc10f7a9690b5a16cd0bb",
-  "0xf235bb30ad375f279248aafc89f4a92899a900de",
+// 🎯 Lista de eventos disponíveis
+const eventTypes = [
+  "AgentAdded",
+  "Transfer",
+  "BuyerApproved",
+  "AddressFrozen",
+  "Unpaused",
 ];
+
+// 🔥 Mapeando contratos para coleções do MongoDB
+const contracts = [
+  { name: "Trusted Issuer Registry", address: import.meta.env.VITE_TRUSTED_ISSUER_REGISTRY_ADDRESS, collection: "financial_compliance" },
+  { name: "Claim Topics Registry", address: import.meta.env.VITE_CLAIM_TOPICS_REGISTRY_ADDRESS, collection: "financial_compliance" },
+  { name: "Identity Registry Storage", address: import.meta.env.VITE_IDENTITY_REGISTRY_STORAGE_ADDRESS, collection: "ident_registry_storage" },
+  { name: "Modular Compliance", address: import.meta.env.VITE_MODULAR_COMPLIANCE_ADDRESS, collection: "financial_compliance" },
+  { name: "Identity Registry", address: import.meta.env.VITE_IDENTITY_REGISTRY_ADDRESS, collection: "identity_registry" },
+  { name: "Identity", address: import.meta.env.VITE_IDENTITY_ADDRESS, collection: "identity_registry" },
+  { name: "Token", address: import.meta.env.VITE_TOKEN_ADDRESS, collection: "token_rwa" },
+  { name: "Compliance", address: import.meta.env.VITE_COMPLIANCE_ADDRESS, collection: "financial_compliance" },
+].filter((contract) => contract.address); // 🔥 Remove contratos não definidos
 
 export const EventFilter = () => {
   const fetchHistory = useEventStore((state) => state.fetchHistory);
   const [eventType, setEventType] = useState("");
-  const [contractAddress, setContractAddress] = useState("");
+  const [selectedContract, setSelectedContract] = useState<{ address: string; collection: string } | null>(null);
 
+  // 🔍 Aplica os filtros chamando o fetchHistory corretamente
   const applyFilters = () => {
-    fetchHistory("token_rwa", 1, 10, eventType, contractAddress);
+    if (!selectedContract) return;
+    fetchHistory(selectedContract.collection, 1, 10, eventType);
+  };
+
+  // ♻️ Reseta os filtros
+  const resetFilters = () => {
+    setEventType("");
+    setSelectedContract(null);
+    fetchHistory("token_rwa", 1, 10); // 🔥 Padrão: buscar tudo em token_rwa
   };
 
   return (
-    <Box p={3} bg="gray.700" borderRadius="md" mb={4}>
+    <Box p={4} bg="gray.800" borderRadius="md" boxShadow="md" mb={4}>
       <HStack spacing={4}>
+        {/* 🏷️ Filtro por Contrato */}
         <Select
-          placeholder="Tipo de Evento"
+          placeholder="Filtrar por contrato"
+          value={selectedContract?.address || ""}
+          onChange={(e) => {
+            const contract = contracts.find((c) => c.address === e.target.value);
+            setSelectedContract(contract || null);
+          }}
+          bg="gray.700"
+          color="white"
+        >
+          {contracts.map(({ name, address }) => (
+            <option key={address} value={address}>
+              {name} ({address.slice(0, 6)}...{address.slice(-4)})
+            </option>
+          ))}
+        </Select>
+
+        {/* 🏷️ Filtro por Tipo de Evento */}
+        <Select
+          placeholder="Filtrar por evento"
           value={eventType}
           onChange={(e) => setEventType(e.target.value)}
+          bg="gray.700"
+          color="white"
+          isDisabled={!selectedContract} // 🔥 Só habilita se um contrato foi escolhido
         >
           {eventTypes.map((type) => (
             <option key={type} value={type}>
@@ -32,20 +78,14 @@ export const EventFilter = () => {
           ))}
         </Select>
 
-        <Select
-          placeholder="Contrato"
-          value={contractAddress}
-          onChange={(e) => setContractAddress(e.target.value)}
-        >
-          {contractAddresses.map((address) => (
-            <option key={address} value={address}>
-              {address}
-            </option>
-          ))}
-        </Select>
-
-        <Button colorScheme="teal" onClick={applyFilters}>
+        {/* 🔍 Botão para aplicar filtros */}
+        <Button colorScheme="teal" onClick={applyFilters} isDisabled={!selectedContract}>
           Aplicar Filtros
+        </Button>
+
+        {/* ♻️ Botão para resetar */}
+        <Button colorScheme="red" variant="outline" onClick={resetFilters}>
+          Resetar
         </Button>
       </HStack>
     </Box>

@@ -20,6 +20,8 @@ export const EventList = () => {
 
   useEffect(() => {
     fetchHistory("token_rwa", currentPage, 10);
+    fetchHistory("identity_registry", currentPage, 10);
+ 
   }, [currentPage]);
 
   useEffect(() => {
