@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import { FiActivity, FiDatabase, FiUsers, FiCheckCircle, FiSettings } from "react-icons/fi";
 import { MdOutlineRealEstateAgent } from "react-icons/md";
 
+import { CustomConnect } from "../CustomConnect";
+
 export const Header = () => {
   return (
     <Flex
@@ -20,7 +22,7 @@ export const Header = () => {
 
       <Spacer />
 
-      <HStack spacing={6}>
+      <HStack spacing={6} > 
         <NavLink to="/dashboard/events">
           <HStack cursor="pointer">
             <Icon as={FiActivity} boxSize={5} color="var(--text-primary)" />
@@ -39,7 +41,7 @@ export const Header = () => {
             <Text color="var(--text-primary)">Agentes</Text>
           </HStack>
         </NavLink>
-        <NavLink to="/dashboard/approve-buyer">
+        {/* <NavLink to="/dashboard/approve-buyer">
           <HStack cursor="pointer">
             <Icon as={FiCheckCircle} boxSize={5} color="var(--text-primary)" />
             <Text color="var(--text-primary)">Aprovar Comprador</Text>
@@ -50,12 +52,16 @@ export const Header = () => {
             <Icon as={FiSettings} boxSize={5} color="var(--text-primary)" />
             <Text color="var(--text-primary)">KYC</Text>
           </HStack>
-        </NavLink>
+        </NavLink> */}
       </HStack>
 
       <Spacer />
 
-      <Avatar name="Usuário" boxShadow="0px 0px 10px var(--rose)" border="2px solid var(--rose)" />
+      <Spacer />
+
+      <Spacer />
+
+      <CustomConnect />
     </Flex>
   );
 };
