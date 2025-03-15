@@ -42,7 +42,7 @@ export const EventItem = ({ event }: EventItemProps) => {
       <MotionBox
         p={4}
         w="95%"
-        bg="var(--background-medium-opacity)"
+        bg="var(--background-medium-opacity-2)"
         alignSelf="center"
         borderRadius="lg"
         opacity={0.8}
