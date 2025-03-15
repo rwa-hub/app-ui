@@ -11,8 +11,7 @@ export const Footer = () => {
       w="100%"
       bg="var(--background-dark)"
       py={4}
-      boxShadow="0px 0px 15px var(--rose)"
-      borderTop="2px solid var(--rose)"
+      borderTop="2px solid var(--accent)"
       textAlign="center"
       mt="auto"
       initial={{ opacity: 0, y: 10 }}
@@ -20,7 +19,7 @@ export const Footer = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <Text fontSize="sm" color="var(--text-primary)">
-        © {new Date().getFullYear()} CyberPanel | Todos os direitos reservados
+        © {new Date().getFullYear()} RWAHUB | Todos os direitos reservados
       </Text>
 
       <HStack spacing={4} justify="center" mt={2}>
