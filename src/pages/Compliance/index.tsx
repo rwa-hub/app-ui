@@ -8,6 +8,7 @@ import {
   Tab,
   TabPanel,
   Select,
+  Text,
   useToast,
 } from "@chakra-ui/react";
 import { useWriteContract, usePublicClient } from "wagmi";
@@ -44,7 +45,6 @@ const contracts = {
 };
 
 export const Compliance = () => {
-  const toast = useToast();
   const publicClient = usePublicClient();
   const { writeContractAsync, isPending } = useWriteContract();
 
@@ -85,8 +85,6 @@ export const Compliance = () => {
         return value;
       }) || [];
 
-      console.log("🚀 Enviando transação:", selectedFunction, "com argumentos:", args);
-
       result = await writeContractAsync({
         address: selectedContract.address,
         abi: selectedContract.abi,
@@ -98,8 +96,6 @@ export const Compliance = () => {
 
       setActiveStep(3);
       const receipt = await publicClient?.waitForTransactionReceipt({ hash: result });
-
-      console.log("📌 Dados da transação:", receipt);
 
       if (receipt?.status === "success") {
         setActiveStep(4);
@@ -115,8 +111,6 @@ export const Compliance = () => {
         throw new Error("A transação falhou.");
       }
     } catch (error) {
-      console.error("❌ Erro na transação:", error);
-
       const receipt = result
         ? await publicClient?.getTransactionReceipt({ hash: result })
         : null;
@@ -149,20 +143,9 @@ export const Compliance = () => {
     }
   };
 
-
-
-  const args = functionInputs[selectedFunction as keyof typeof functionInputs]?.inputs.map(
-    (input) => formData[input.name]
-  ) || [];
-
-  console.log({
-    address: selectedContract.address,
-    abi: selectedContract.abi,
-    functionName: selectedFunction,
-    args,
-  })
   return (
     <Box>
+      {/* 🔹 Tabs do Sistema */}
       <Tabs isFitted variant="soft-rounded" colorScheme="blue" onChange={handleTabChange}>
         <TabList mb={4}>
           <Tab>🔐 KYC (Identity Registry)</Tab>
@@ -171,27 +154,140 @@ export const Compliance = () => {
         </TabList>
 
         <TabPanels>
-          {Object.keys(contracts).map((tabKey) => (
-            <TabPanel key={tabKey}>
-              <VStack spacing={4} mb={4}>
-                <Select
-                  placeholder="Selecione uma função"
-                  value={selectedFunction}
-                  onChange={(e) => {
-                    setSelectedFunction(e.target.value);
-                    setModalOpen(true);
-                  }}
-                >
-                  {contracts[tabKey as keyof typeof contracts].functions.map((func: string) => (
-                    <option key={func} value={func}>
-                      {functionInputs[func as keyof typeof functionInputs]?.label || func} {/* 🔥 Corrigido */}
-                    </option>
-                  ))}
-                </Select>
+          {/* 🔹 Aba KYC */}
+          <TabPanel>
+            <Box
+              bg="var(--background-medium-opacity-1)"
+              p={5}
+              borderRadius="lg"
+              textAlign="center"
+              color="white"
+              w="100%"
+            >
+              <Text fontSize="2xl" textAlign="left" fontWeight="bold" color="#00ffcc">
+                Identidade Digital e Compliance (ERC-3643)
+              </Text>
+              <Text textAlign="left" fontSize="md" color="gray.300" mt={2}>
+                O <em style={{
+                  color: "#00ffcc",
+                }}> KYC (Identity Registry) </em> é um componente do <em style={{
+                  color: "#00ffcc",
+                }}> ERC-3643 </em> que armazena identidades verificadas
+                <em style={{
+                  color: "#00ffcc",
+                }}> on-chain </em>. Ele garante que apenas usuários aprovados possam possuir ou transferir ativos tokenizados.
+                A verificação é feita por agentes confiáveis.
+              </Text>
+            </Box>
 
-              </VStack>
-            </TabPanel>
-          ))}
+            {/* 🔹 Formulário de Seleção */}
+            <VStack spacing={4} mt={6}>
+              <Select
+                placeholder="Selecione uma função"
+                value={selectedFunction}
+                onChange={(e) => {
+                  setSelectedFunction(e.target.value);
+                  setModalOpen(true);
+                }}
+              >
+                {contracts.kyc.functions.map((func: string) => (
+                  <option key={func} value={func}>
+                    {functionInputs[func as keyof typeof functionInputs]?.label || func}
+                  </option>
+                ))}
+              </Select>
+            </VStack>
+          </TabPanel>
+
+          {/* 🔹  Modular Compliance */}
+          <TabPanel>
+            <Box
+              bg="var(--background-medium-opacity-1)"
+              p={5}
+              borderRadius="lg"
+              textAlign="center"
+              color="white"
+              w="100%"
+            >
+              <Text fontSize="2xl" textAlign="left" fontWeight="bold" color="#00ffcc">
+                 Modular Compliance
+              </Text>
+              <Text textAlign="left" fontSize="md" color="gray.300" mt={2}>
+                O <em style={{
+                  color: "#00ffcc",
+                }}> Modular Compliance </em> permite personalizar regras de compliance para ativos tokenizados.
+                Desenvolvido em Solidity, ele possibilita adicionar ou remover regras de aceitação e transferência
+                de forma modular, garantindo flexibilidade e <em style={{
+                  color: "#00ffcc",
+                }}> conformidade regulatória </em>.
+              </Text>
+            </Box>
+
+            {/* Select Form */}
+            <VStack spacing={4} mt={6}>
+              <Select
+                placeholder="Selecione uma função"
+                value={selectedFunction}
+                onChange={(e) => {
+                  setSelectedFunction(e.target.value);
+                  setModalOpen(true);
+                }}
+              >
+                {contracts.modularCompliance.functions.map((func: string) => (
+                  <option key={func} value={func}>
+                    {functionInputs[func as keyof typeof functionInputs]?.label || func}
+                  </option>
+                ))}
+              </Select>
+            </VStack>
+          </TabPanel>
+
+          {/*  Financial RWA */}
+          <TabPanel>
+            <Box
+              bg="var(--background-medium-opacity-1)"
+              p={5}
+              borderRadius="lg"
+              textAlign="center"
+              color="white"
+              w="100%"
+            >
+              <Text fontSize="2xl" textAlign="left" fontWeight="bold" color="#00ffcc">
+                Módulo Financeiro para RWA
+              </Text>
+              <Text textAlign="left" fontSize="md" color="gray.300" mt={2}>
+                O <em style={{
+                  color: "#00ffcc",
+                }}> Financial RWA  </em> é um módulo customizado em Solidity para gerenciar critérios financeiros
+                antes da transferência de ativos <em style={{
+                  color: "#00ffcc",
+                }}> RWA (Real World Assets) </em>. Ele verifica requisitos como <em style={{
+                  color: "#00ffcc",
+                }}> renda mínima, </em>
+                <em style={{
+                  color: "#00ffcc",
+                }}> documentos aprovados e seguro de crédito </em>, garantindo a conformidade da transação.
+              </Text>
+            </Box>
+
+            {/*   Select Form */}
+            <VStack spacing={4} mt={6}>
+              <Select
+                placeholder="Selecione uma função"
+                value={selectedFunction}
+                onChange={(e) => {
+                  setSelectedFunction(e.target.value);
+                  setModalOpen(true);
+                }}
+              >
+                {contracts.financialRWA.functions.map((func: string) => (
+                  <option key={func} value={func}>
+                    {functionInputs[func as keyof typeof functionInputs]?.label || func}
+                  </option>
+                ))}
+              </Select>
+            </VStack>
+          </TabPanel>
         </TabPanels>
       </Tabs>
 
@@ -208,16 +304,7 @@ export const Compliance = () => {
         handleTransaction={handleTransaction}
       />
 
-
-      <ComplianceStepper
-        activeStep={activeStep}
-        selectedContract={selectedContract}
-        selectedFunction={selectedFunction}
-      />
-
+      <ComplianceStepper activeStep={activeStep} selectedContract={selectedContract} selectedFunction={selectedFunction} />
     </Box>
-
-
-
   );
 };
