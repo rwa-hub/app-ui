@@ -34,6 +34,10 @@ const config: ThemeConfig = {
 }
 
 export const theme = extendTheme({
+  fonts: {
+    heading: "Cyberway, MonostructRegular, Ryzes, NeonRetro, Scoreboard, NeonLights, ExoRegular, ExoMedium, ExoBold, sans-serif",
+    body: "Cyberway, MonostructRegular, Ryzes, NeonRetro, Scoreboard, NeonLights, ExoRegular, ExoMedium, ExoBold, sans-serif",
+  },
   // colors: lightTheme.colors,
   config,
   // styles,

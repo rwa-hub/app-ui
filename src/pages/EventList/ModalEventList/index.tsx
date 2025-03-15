@@ -17,7 +17,7 @@ interface ModalNeonProps {
   onClose: () => void;
   title: string;
   status?: "success" | "error" | "warning" | "neutral" | "focus";
-  event: Record<string, unknown>; 
+  event: Record<string, unknown>;
 }
 
 const statusColors = {
@@ -61,7 +61,10 @@ const renderEventDetails = (eventData: Record<string, any>) => {
     return (
       <Box key={key} display="flex" justifyContent="space-between" w="100%" p={2} borderBottom="1px solid var(--background-light)">
         <Text fontWeight="bold" color="var(--text-primary)">{key}:</Text>
-        <Text color="var(--accent)">{displayValue}</Text>
+        <Text color="var(--accent)">
+          {typeof displayValue === "object" ? JSON.stringify(displayValue, null, 2) : displayValue}
+        </Text>
+
       </Box>
     );
   });

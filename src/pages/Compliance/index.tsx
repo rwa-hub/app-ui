@@ -101,7 +101,7 @@ export const Compliance = () => {
         setActiveStep(4);
         sonnerToast.success(
           <Box textAlign="center">
-            <CheckCircle size={32} color="#00ffcc" />
+            <CheckCircle size={32} color="var(--rose)" />
             <strong>Transação Confirmada</strong>
             <p>Função {selectedFunction} executada com sucesso! 🚀</p>
           </Box>,
@@ -147,10 +147,10 @@ export const Compliance = () => {
     <Box>
       {/* 🔹 Tabs do Sistema */}
       <Tabs isFitted variant="soft-rounded" colorScheme="blue" onChange={handleTabChange}>
-        <TabList mb={4}>
-          <Tab>🔐 KYC (Identity Registry)</Tab>
-          <Tab>🏛 Modular Compliance</Tab>
-          <Tab>💰 Financial RWA</Tab>
+        <TabList  mb={4}>
+          <Tab  p={3}>🔐 KYC (Identity Registry)</Tab>
+          <Tab  p={3}>🏛 Modular Compliance</Tab>
+          <Tab  p={3}>💰 Financial RWA</Tab>
         </TabList>
 
         <TabPanels>
@@ -160,22 +160,23 @@ export const Compliance = () => {
               bg="var(--background-medium-opacity-1)"
               p={5}
               borderRadius="lg"
+              boxShadow="10px 0 0 2px var(--accent)"
               textAlign="center"
               color="white"
               w="100%"
             >
-              <Text fontSize="2xl" textAlign="left" fontWeight="bold" color="#00ffcc">
+              <Text fontFamily="ExoBold" textAlign="left" fontSize="3xl" color="var(--rose)">
                 Identidade Digital e Compliance (ERC-3643)
               </Text>
-              <Text textAlign="left" fontSize="md" color="gray.300" mt={2}>
-                O <em style={{
-                  color: "#00ffcc",
-                }}> KYC (Identity Registry) </em> é um componente do <em style={{
-                  color: "#00ffcc",
-                }}> ERC-3643 </em> que armazena identidades verificadas
-                <em style={{
-                  color: "#00ffcc",
-                }}> on-chain </em>. Ele garante que apenas usuários aprovados possam possuir ou transferir ativos tokenizados.
+              <Text textAlign="left" fontSize="md" fontStyle={"initial"} mt={2} color="gray.300"  >
+                O <span style={{
+                  color: "var(--rose)",
+                }}> KYC (Identity Registry) </span> é um componente do <span style={{
+                  color: "var(--rose)",
+                }}> ERC-3643 </span> que armazena identidades verificadas
+                <span style={{
+                  color: "var(--rose)",
+                }}> on-chain </span>. Ele garante que apenas usuários aprovados possam possuir ou transferir ativos tokenizados.
                 A verificação é feita por agentes confiáveis.
               </Text>
             </Box>
@@ -205,25 +206,26 @@ export const Compliance = () => {
               bg="var(--background-medium-opacity-1)"
               p={5}
               borderRadius="lg"
+              boxShadow="10px 0 0 2px var(--accent)"
               textAlign="center"
               color="white"
               w="100%"
             >
-              <Text fontSize="2xl" textAlign="left" fontWeight="bold" color="#00ffcc">
-                 Modular Compliance
+              <Text fontFamily="ExoBold"  fontSize="3xl" textAlign="left" color="var(--rose)">
+                 Compliance
               </Text>
-              <Text textAlign="left" fontSize="md" color="gray.300" mt={2}>
-                O <em style={{
-                  color: "#00ffcc",
-                }}> Modular Compliance </em> permite personalizar regras de compliance para ativos tokenizados.
-                Desenvolvido em Solidity, ele possibilita adicionar ou remover regras de aceitação e transferência
-                de forma modular, garantindo flexibilidade e <em style={{
-                  color: "#00ffcc",
-                }}> conformidade regulatória </em>.
+              <Text textAlign="left" fontSize="md" fontStyle={"initial"} mt={2} color="gray.300"  >
+                O <span style={{
+                  color: "var(--rose)",
+                }}> Modular Compliance </span> permite personalizar regras de compliance para ativos tokenizados.
+                Desenvolvido span Solidity, ele possibilita adicionar ou remover regras de aceitação e transferência
+                de forma modular, garantindo flexibilidade e <span style={{
+                  color: "var(--rose)",
+                }}> conformidade regulatória </span>.
               </Text>
             </Box>
 
-            {/* Select Form */}
+       
             <VStack spacing={4} mt={6}>
               <Select
                 placeholder="Selecione uma função"
@@ -248,25 +250,26 @@ export const Compliance = () => {
               bg="var(--background-medium-opacity-1)"
               p={5}
               borderRadius="lg"
+              boxShadow="10px 0 0 2px var(--accent)"
               textAlign="center"
               color="white"
               w="100%"
             >
-              <Text fontSize="2xl" textAlign="left" fontWeight="bold" color="#00ffcc">
-                Módulo Financeiro para RWA
+              <Text fontFamily="ExoBold" textAlign="left" fontSize="3xl" color="var(--rose)">
+                Módulo Custom RWA 
               </Text>
-              <Text textAlign="left" fontSize="md" color="gray.300" mt={2}>
-                O <em style={{
-                  color: "#00ffcc",
-                }}> Financial RWA  </em> é um módulo customizado em Solidity para gerenciar critérios financeiros
-                antes da transferência de ativos <em style={{
-                  color: "#00ffcc",
-                }}> RWA (Real World Assets) </em>. Ele verifica requisitos como <em style={{
-                  color: "#00ffcc",
-                }}> renda mínima, </em>
-                <em style={{
-                  color: "#00ffcc",
-                }}> documentos aprovados e seguro de crédito </em>, garantindo a conformidade da transação.
+              <Text textAlign="left" fontSize="md" fontStyle={"initial"} mt={2} color="gray.300" >
+                O <span style={{
+                  color: "var(--rose)",
+                }}> Financial RWA  </span> é um módulo customizado span Solidity para gerenciar critérios financeiros
+                antes da transferência de ativos <span style={{
+                  color: "var(--rose)",
+                }}> RWA (Real World Assets) </span>. Ele verifica requisitos como <span style={{
+                  color: "var(--rose)",
+                }}> renda mínima, </span>
+                <span style={{
+                  color: "var(--rose)",
+                }}> documentos aprovados e seguro de crédito </span>, garantindo a conformidade da transação.
               </Text>
             </Box>
 
@@ -304,7 +307,9 @@ export const Compliance = () => {
         handleTransaction={handleTransaction}
       />
 
-      <ComplianceStepper activeStep={activeStep} selectedContract={selectedContract} selectedFunction={selectedFunction} />
+        <Box mt={10}>
+        <ComplianceStepper activeStep={activeStep} selectedContract={selectedContract} selectedFunction={selectedFunction} />
+        </Box>
     </Box>
   );
 };

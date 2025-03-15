@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useEventStore } from "@/store/useEventStore";
 import { Box, Select, Button, HStack } from "@chakra-ui/react";
 
-// 🎯 Lista de eventos disponíveis
 const eventTypes = [
   "AgentAdded",
   "Transfer",
   "BuyerApproved",
   "AddressFrozen",
   "Unpaused",
+  "AgentRemoved",
 ];
 
 // 🔥 Mapeando contratos para coleções do MongoDB
@@ -20,8 +20,8 @@ const contracts = [
   { name: "Identity Registry", address: import.meta.env.VITE_IDENTITY_REGISTRY_ADDRESS, collection: "identity_registry" },
   { name: "Identity", address: import.meta.env.VITE_IDENTITY_ADDRESS, collection: "identity_registry" },
   { name: "Token", address: import.meta.env.VITE_TOKEN_ADDRESS, collection: "token_rwa" },
-  { name: "Compliance", address: import.meta.env.VITE_COMPLIANCE_ADDRESS, collection: "financial_compliance" },
-].filter((contract) => contract.address); // 🔥 Remove contratos não definidos
+  { name: "Financial Compliance", address: import.meta.env.VITE_FINANCIAL_RWA_ADDRESS, collection: "financial_compliance" },
+].filter((contract) => contract.address); 
 
 export const EventFilter = () => {
   const fetchHistory = useEventStore((state) => state.fetchHistory);
@@ -38,7 +38,7 @@ export const EventFilter = () => {
   const resetFilters = () => {
     setEventType("");
     setSelectedContract(null);
-    fetchHistory("token_rwa", 1, 10); // 🔥 Padrão: buscar tudo em token_rwa
+    fetchHistory("token_rwa", 1, 10);
   };
 
   return (
