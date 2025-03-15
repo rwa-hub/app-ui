@@ -12,7 +12,6 @@ import {
   StepTitle,
   StepDescription,
   StepSeparator,
-
   Flex,
   Progress,
 } from "@chakra-ui/react";
