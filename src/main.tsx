@@ -8,6 +8,7 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit"
 import { WagmiProvider } from "wagmi"
 import { config } from "./wagmi"
 import '@rainbow-me/rainbowkit/styles.css';
+import { Toaster } from "sonner"
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
           <ThemeProvider>
+          <Toaster position="top-center" expand richColors />
             <App />
           </ThemeProvider>
         </RainbowKitProvider>

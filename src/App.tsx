@@ -3,12 +3,12 @@ import { Dashboard } from "@/shared/Layout";
 import { EventList } from "@/pages/EventList";
 import { Token } from "@/pages/Token";
 import { Agents } from "@/pages/Agents";
-import { ApproveBuyer } from "@/pages/ApproveBuyer";
 import { KYC } from "@/pages/KYC";
 import { Home } from "@/pages/Home";
 import { About } from "@/pages/SidebarPages/About";
 import { RWA } from "@/pages/SidebarPages/RWA";
 import { Docs } from "./pages/SidebarPages";
+import { Compliance } from "./pages/Compliance";
 
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
           <Route path="events" element={<EventList />} />
           <Route path="tokens" element={<Token />} />
           <Route path="agents" element={<Agents />} />
-          <Route path="approve-buyer" element={<ApproveBuyer />} />
+          <Route path="compliance" element={<Compliance />} />
           <Route path="kyc" element={<KYC />} />
         </Route>
 
