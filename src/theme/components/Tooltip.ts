@@ -16,11 +16,6 @@ const card = defineStyle({
   borderRadius: '12px'
 })
 
-_Tooltip.defaultProps = {
-  hasArrow: true,
-  placement: 'top'
-}
-
 export const Tooltip = defineStyleConfig({
   baseStyle,
   variants: { card }

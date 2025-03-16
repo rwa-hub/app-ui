@@ -70,6 +70,5 @@ const cleanStyle = definePartsStyle({
 })
 
 export const NumberInput = defineMultiStyleConfig({
-  variants: { filled: filledStyle, filledDark: filledDarkStyle, clean: cleanStyle },
-  defaultProps: { variant: 'filled' }
+  variants: { filled: filledStyle, filledDark: filledDarkStyle, clean: cleanStyle }
 })

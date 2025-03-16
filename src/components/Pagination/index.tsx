@@ -1,4 +1,4 @@
-import { Button, HStack } from "@chakra-ui/react";
+import { HStack, Button, Text } from "@chakra-ui/react";
 
 interface PaginationProps {
   currentPage: number;
@@ -6,17 +6,43 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      onPageChange(currentPage + 1);
+    }
+  };
+
   return (
-    <HStack justify="center" spacing={2} mt={4}>
-      <Button size="sm" onClick={() => onPageChange(currentPage - 1)} isDisabled={currentPage <= 1}>
-        ◀ Anterior
+    <HStack spacing={4} justify="center" mt={4}>
+      <Button 
+        onClick={handlePrevious} 
+        isDisabled={currentPage <= 1}
+        bg="var(--background-dark)"
+        color="var(--text-primary)"
+        _hover={{ bg: "var(--accent)" }}
+      >
+        ⬅️ Anterior
       </Button>
-      <Button size="sm" fontWeight="bold" isDisabled>
+
+      <Text fontSize="md" color="var(--text-primary)">
         Página {currentPage} de {totalPages}
-      </Button>
-      <Button size="sm" onClick={() => onPageChange(currentPage + 1)} isDisabled={currentPage >= totalPages}>
-        Próximo ▶
+      </Text>
+
+      <Button 
+        onClick={handleNext} 
+        isDisabled={currentPage >= totalPages}
+        bg="var(--background-dark)"
+        color="var(--text-primary)"
+        _hover={{ bg: "var(--accent)" }}
+      >
+        Próxima ➡️
       </Button>
     </HStack>
   );

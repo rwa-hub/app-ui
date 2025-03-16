@@ -87,6 +87,5 @@ const numberStyle = definePartsStyle({
 })
 
 export const Input = defineMultiStyleConfig({
-  variants: { filled: filledStyle, filledDark: capsuleRadioStyle, clean: cleanStyle, number: numberStyle },
-  defaultProps: { variant: 'filled' }
+  variants: { filled: filledStyle, filledDark: filledStyle, capsuleRadio: capsuleRadioStyle, clean: cleanStyle, number: numberStyle },
 })

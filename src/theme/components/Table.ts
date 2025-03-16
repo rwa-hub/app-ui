@@ -16,4 +16,4 @@ const baseStyle = definePartsStyle({
   tbody: {}
 })
 
-export const Table = defineMultiStyleConfig({ baseStyle, defaultProps: { size: 'sm' } })
+export const Table = defineMultiStyleConfig({ baseStyle })

@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
 import { EventData } from "./event-types";
-import { io, Socket } from "socket.io-client";
 import { createStandaloneToast } from "@chakra-ui/react";
 import { statusColors } from "@/utils/toast-neon";
 
@@ -31,6 +30,9 @@ interface EventStore {
 
 export const useEventStore = create<EventStore>((set, get) => {
   let wsInstance: WebSocket | null = null;
+  let pingInterval: NodeJS.Timeout | null = null;
+  let reconnectTimeout: NodeJS.Timeout | null = null;
+  let reconnectAttempts = 0;
 
   return {
     realTimeEvents: [],
@@ -40,12 +42,12 @@ export const useEventStore = create<EventStore>((set, get) => {
     totalPages: 1,
     eventType: "",
     contractAddress: "",
-    socketInstance: null, 
+    socketInstance: null,
 
     fetchHistory: async (
       collection,
       page = 1,
-      limit = 10,
+      limit = 5,
       eventType = "",
       contractAddress = ""
     ) => {
@@ -73,13 +75,13 @@ export const useEventStore = create<EventStore>((set, get) => {
 
     setFilters: (eventType, contractAddress) => {
       set({ eventType, contractAddress, currentPage: 1 });
-      get().fetchHistory("token_rwa", 1, 10, eventType, contractAddress);
+      get().fetchHistory("token_rwa", 1, 5, eventType, contractAddress);
     },
 
     setCurrentPage: (page: number) => {
       set({ currentPage: page });
       const { eventType, contractAddress } = get();
-      get().fetchHistory("token_rwa", page, 10, eventType, contractAddress);
+      get().fetchHistory("token_rwa", page, 5, eventType, contractAddress);
     },
 
     addRealTimeEvent: (event: EventData) => {
@@ -115,12 +117,12 @@ export const useEventStore = create<EventStore>((set, get) => {
     },
 
     connectWebSocket: () => {
-      if (wsInstance) {
+      if (wsInstance && wsInstance.readyState !== WebSocket.CLOSED) {
         console.warn("⚠️ WebSocket já conectado, ignorando nova conexão.");
         return;
       }
 
-      console.log("🔌 Conectando ao WebSocket...");
+      console.log("🔌 Tentando conectar ao WebSocket...");
 
       wsInstance = new WebSocket("ws://localhost:8080/ws");
       set({ socketInstance: wsInstance });
@@ -128,6 +130,17 @@ export const useEventStore = create<EventStore>((set, get) => {
       wsInstance.onopen = () => {
         console.log("✅ WebSocket conectado!");
         wsInstance?.send(JSON.stringify({ type: "subscribe", message: "Cliente conectado" }));
+
+        // 🔥 Reinicia as tentativas de reconexão ao conectar
+        reconnectAttempts = 0;
+
+        // 🔥 Mantém a conexão ativa enviando pings a cada 25s
+        pingInterval = setInterval(() => {
+          if (wsInstance?.readyState === WebSocket.OPEN) {
+            wsInstance.send(JSON.stringify({ type: "ping" }));
+            console.log("📡 Ping enviado ao WebSocket");
+          }
+        }, 25000); // PING a cada 25s
       };
 
       wsInstance.onmessage = (event) => {
@@ -142,11 +155,23 @@ export const useEventStore = create<EventStore>((set, get) => {
         }
       };
 
-      wsInstance.onclose = () => {
-        console.warn("❌ WebSocket desconectado. Tentando reconectar em 3s...");
+      wsInstance.onclose = (event) => {
+        console.warn(`❌ WebSocket desconectado (${event.code}: ${event.reason}). Tentando reconectar...`);
         wsInstance = null;
         set({ socketInstance: null });
-        setTimeout(get().connectWebSocket, 3000);
+
+        if (pingInterval) {
+          clearInterval(pingInterval);
+          pingInterval = null;
+        }
+
+        // 🔥 Lógica de reconexão exponencial (2s → 4s → 8s até 30s máx.)
+        const reconnectDelay = Math.min(2000 * 2 ** reconnectAttempts, 30000);
+        reconnectAttempts++;
+
+        console.log(`⏳ Tentando reconectar WebSocket em ${reconnectDelay / 1000}s...`);
+
+        reconnectTimeout = setTimeout(get().connectWebSocket, reconnectDelay);
       };
 
       wsInstance.onerror = (error) => {

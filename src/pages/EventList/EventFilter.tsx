@@ -28,13 +28,13 @@ export const EventFilter = () => {
   const [eventType, setEventType] = useState("");
   const [selectedContract, setSelectedContract] = useState<{ address: string; collection: string } | null>(null);
 
-  // 🔍 Aplica os filtros chamando o fetchHistory corretamente
+
   const applyFilters = () => {
     if (!selectedContract) return;
     fetchHistory(selectedContract.collection, 1, 10, eventType);
   };
 
-  // ♻️ Reseta os filtros
+
   const resetFilters = () => {
     setEventType("");
     setSelectedContract(null);
@@ -44,7 +44,7 @@ export const EventFilter = () => {
   return (
     <Box p={4} bg="gray.800" borderRadius="md" boxShadow="md" mb={4}>
       <HStack spacing={4}>
-        {/* 🏷️ Filtro por Contrato */}
+
         <Select
           placeholder="Filtrar por contrato"
           value={selectedContract?.address || ""}
@@ -62,14 +62,14 @@ export const EventFilter = () => {
           ))}
         </Select>
 
-        {/* 🏷️ Filtro por Tipo de Evento */}
+
         <Select
           placeholder="Filtrar por evento"
           value={eventType}
           onChange={(e) => setEventType(e.target.value)}
           bg="gray.700"
           color="white"
-          isDisabled={!selectedContract} // 🔥 Só habilita se um contrato foi escolhido
+          isDisabled={!selectedContract} 
         >
           {eventTypes.map((type) => (
             <option key={type} value={type}>

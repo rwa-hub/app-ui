@@ -12,4 +12,4 @@ const baseStyle = definePartsStyle({
   }
 })
 
-export const Card = defineMultiStyleConfig({ variants: { unstyled: baseStyle }, defaultProps: { variant: 'unstyled' } })
+export const Card = defineMultiStyleConfig({ variants: { unstyled: baseStyle } })

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   VStack,
@@ -9,19 +9,19 @@ import {
   TabPanel,
   Select,
   Text,
-  useToast,
 } from "@chakra-ui/react";
 import { useWriteContract, usePublicClient } from "wagmi";
 import { ComplianceStepper } from "./Stepper/ComplianceStepper";
 import { TransactionModal } from "./TransactionModal";
-import { CheckCircle, XCircle } from "lucide-react";
-import { toast as sonnerToast } from "sonner";
-
 import IDENTITY_REGISTRY_ABI from "@/utils/abis/IdentityRegistry.json";
 import MODULAR_COMPLIANCE_ABI from "@/utils/abis/modular_compliance.json";
 import FINANCIAL_RWA_ABI from "@/utils/abis/financial_rwa.abi.json";
-
 import { extractWriteFunctionsFromABI, functionInputs, generateInputsFromABI } from "@/utils/function-inputs";
+import { NeonLoader } from "@/components/NeonLoader";
+import NeonToast from "@/components/NeonToast";
+import { useEventStore } from "@/store/useEventStore";
+
+
 
 const contracts = {
   kyc: {
@@ -46,7 +46,9 @@ const contracts = {
 
 export const Compliance = () => {
   const publicClient = usePublicClient();
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
+  const connectWebSocket = useEventStore((state) => state.connectWebSocket);
+
 
   const [selectedTab, setSelectedTab] = useState<"kyc" | "modularCompliance" | "financialRWA">("kyc");
   const [selectedFunction, setSelectedFunction] = useState<string>("");
@@ -55,6 +57,7 @@ export const Compliance = () => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const selectedContract = contracts[selectedTab];
+  const [isTransactionPending, setTransactionPending] = useState(false);
 
   const handleTabChange = (index: number) => {
     const tabKeys = ["kyc", "modularCompliance", "financialRWA"] as const;
@@ -64,28 +67,32 @@ export const Compliance = () => {
 
 
   const handleTransaction = async () => {
-    if (!selectedFunction) {
-      sonnerToast("⚠️ Selecione uma função.", { position: "top-center", duration: 3000 });
-      return;
-    }
-
-    setModalOpen(false);
-
-    let result;
     try {
-      setActiveStep(2);
+      if (!selectedFunction) {
+        NeonToast.warning("Selecione uma função antes de continuar.");
+        return;
+      }
 
-      const args = functionInputs[selectedFunction as keyof typeof functionInputs]?.inputs.map((input) => {
+      const functionDef = selectedContract.abi.find((fn) => fn.name === selectedFunction);
+      if (!functionDef) throw new Error("Função não encontrada no ABI.");
+
+      const args = functionDef.inputs.map((input) => {
         const value = formData[input.name];
 
-        if (input.type === "uint256" || input.type === "int256") {
-          return BigInt(value) * BigInt(10 ** 18)
-        }
-
+        if (input.type === "uint16") return Number(value);
+        if (input.type === "address") return value.toLowerCase();
         return value;
-      }) || [];
+      });
 
-      result = await writeContractAsync({
+      if (args.length !== functionDef.inputs.length) {
+        throw new Error(`Número de argumentos inválido. Esperado: ${functionDef.inputs.length}, recebido: ${args.length}`);
+      }
+
+
+      // 🔥 FECHA O MODAL IMEDIATAMENTE APÓS O CLIQUE
+      setModalOpen(false);
+
+      const result = await writeContractAsync({
         address: selectedContract.address,
         abi: selectedContract.abi,
         functionName: selectedFunction,
@@ -93,64 +100,43 @@ export const Compliance = () => {
       });
 
       if (!result) throw new Error("Erro ao enviar transação.");
+      setTransactionPending(true);
 
-      setActiveStep(3);
+      // 🔥 AGUARDA A CONFIRMAÇÃO, MAS O MODAL JÁ FOI FECHADO
       const receipt = await publicClient?.waitForTransactionReceipt({ hash: result });
 
       if (receipt?.status === "success") {
-        setActiveStep(4);
-        sonnerToast.success(
-          <Box textAlign="center">
-            <CheckCircle size={32} color="var(--rose)" />
-            <strong>Transação Confirmada</strong>
-            <p>Função {selectedFunction} executada com sucesso! 🚀</p>
-          </Box>,
-          { position: "top-center", duration: 5000 }
-        );
+        setTransactionPending(false);
+        NeonToast.success("Transação concluída com sucesso!");
       } else {
         throw new Error("A transação falhou.");
       }
-    } catch (error) {
-      const receipt = result
-        ? await publicClient?.getTransactionReceipt({ hash: result })
-        : null;
+    } catch (error: any) {
+      console.error("❌ Erro na transação:", error);
+      setTransactionPending(false);
 
-      const safeReceipt = receipt
-        ? JSON.stringify(receipt, (_, value) =>
-          typeof value === "bigint" ? value.toString() : value
-        )
-        : "Sem dados de recibo.";
-
-      sonnerToast.error(
-        <Box
-          textAlign="center"
-          maxW="500px"
-          maxH="250px"
-          overflowY="auto"
-          whiteSpace="pre-wrap"
-          wordBreak="break-word"
-        >
-          <XCircle size={32} color="#ff2a6d" />
-          <strong>Erro na Transação</strong>
-          <pre style={{ textAlign: "left", fontSize: "12px", overflowWrap: "break-word" }}>
-            {(safeReceipt as any)?.message?.slice(0, 400)}
-          </pre>
-        </Box>,
-        { position: "top-center", duration: 8000 }
-      );
-
-      setActiveStep(1);
+      if (error?.code === 4001) {
+        NeonToast.warning("Transação rejeitada pelo usuário.");
+      } else {
+        NeonToast.error(error.message || "Houve um erro na transação.");
+      }
     }
   };
 
+
+  useEffect(() => {
+    connectWebSocket();
+  }, []);
+
   return (
     <Box>
+      {isTransactionPending && <NeonLoader />}
       {/* 🔹 Tabs do Sistema */}
       <Tabs isFitted variant="soft-rounded" colorScheme="blue" onChange={handleTabChange}>
-        <TabList  mb={4}>
-          <Tab  p={3}>🔐 KYC (Identity Registry)</Tab>
-          <Tab  p={3}>🏛 Modular Compliance</Tab>
-          <Tab  p={3}>💰 Financial RWA</Tab>
+        <TabList mb={4}>
+          <Tab p={3}>🔐 KYC (Identity Registry)</Tab>
+          <Tab p={3}>🏛 Modular Compliance</Tab>
+          <Tab p={3}>💰 Financial RWA</Tab>
         </TabList>
 
         <TabPanels>
@@ -211,8 +197,8 @@ export const Compliance = () => {
               color="white"
               w="100%"
             >
-              <Text fontFamily="ExoBold"  fontSize="3xl" textAlign="left" color="var(--rose)">
-                 Compliance
+              <Text fontFamily="ExoBold" fontSize="3xl" textAlign="left" color="var(--rose)">
+                Compliance
               </Text>
               <Text textAlign="left" fontSize="md" fontStyle={"initial"} mt={2} color="gray.300"  >
                 O <span style={{
@@ -225,7 +211,7 @@ export const Compliance = () => {
               </Text>
             </Box>
 
-       
+
             <VStack spacing={4} mt={6}>
               <Select
                 placeholder="Selecione uma função"
@@ -256,7 +242,7 @@ export const Compliance = () => {
               w="100%"
             >
               <Text fontFamily="ExoBold" textAlign="left" fontSize="3xl" color="var(--rose)">
-                Módulo Custom RWA 
+                Módulo Custom RWA
               </Text>
               <Text textAlign="left" fontSize="md" fontStyle={"initial"} mt={2} color="gray.300" >
                 O <span style={{
@@ -307,9 +293,9 @@ export const Compliance = () => {
         handleTransaction={handleTransaction}
       />
 
-        <Box mt={10}>
+      <Box mt={10}>
         <ComplianceStepper activeStep={activeStep} selectedContract={selectedContract} selectedFunction={selectedFunction} />
-        </Box>
+      </Box>
     </Box>
   );
 };

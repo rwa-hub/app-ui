@@ -67,4 +67,3 @@ export const Modal = defineMultiStyleConfig({
   sizes: { sm, md, lg, xl, '2xl': _2xl, '3xl': _3xl }
 })
 
-_Modal.defaultProps = { isCentered: true }

@@ -343,7 +343,6 @@ const xlSizeStyle = definePartsStyle({
 export const Tabs = defineMultiStyleConfig({
   baseStyle,
   sizes: { xs: xsSizeStyle, sm: smSizeStyle, md: mdSizeStyle, lg: lgSizeStyle, xl: xlSizeStyle },
-  defaultProps: { variant: 'line', size: 'sm' },
   variants: {
     line: lineStyle,
     square: squareStyle,

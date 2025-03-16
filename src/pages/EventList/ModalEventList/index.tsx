@@ -30,18 +30,18 @@ const statusColors = {
 
 const MotionModalContent = motion(ModalContent);
 
-// 🔹 Formata endereços Ethereum (ex: 0x12...abcd)
+
 const formatAddress = (address: string) => {
   return address.length > 10 ? `${address.slice(0, 6)}...${address.slice(-4)}` : address;
 };
 
-// 🔹 Formata timestamp para data e hora local
+
 const formatTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
   return isNaN(date.getTime()) ? "🔴 Data inválida" : format(date, "dd/MM/yyyy HH:mm:ss");
 };
 
-// 🔹 Renderiza todos os detalhes do evento no modal
+
 const renderEventDetails = (eventData: Record<string, any>) => {
   return Object.entries(eventData).map(([key, value]) => {
     let displayValue;
@@ -71,8 +71,7 @@ const renderEventDetails = (eventData: Record<string, any>) => {
 };
 
 export const ModalEventList = ({ isOpen, onClose, title, status = "neutral", event }: ModalNeonProps) => {
-  console.log("Modal aberto?", isOpen);
-
+  
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay bg="rgba(0, 0, 0, 0.75)" backdropFilter="blur(10px)" />
