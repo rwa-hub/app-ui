@@ -20,7 +20,18 @@ interface EventStore {
     page: number,
     limit: number,
     eventType?: string,
-    contractAddress?: string
+    contractAddress?: string,
+    userAddress?: string,
+    startDate?: string,
+    endDate?: string,
+    txHash?: string
+  ) => Promise<void>;
+  fetchHistoryByAddress: (
+    userAddress: string,
+    page?: number,
+    limit?: number,
+    startDate?: string,
+    endDate?: string
   ) => Promise<void>;
   setFilters: (eventType: string, contractAddress: string) => void;
   setCurrentPage: (page: number) => void;
@@ -29,6 +40,7 @@ interface EventStore {
 }
 
 export const useEventStore = create<EventStore>((set, get) => {
+
   let wsInstance: WebSocket | null = null;
   let pingInterval: NodeJS.Timeout | null = null;
   let reconnectTimeout: NodeJS.Timeout | null = null;
@@ -45,29 +57,72 @@ export const useEventStore = create<EventStore>((set, get) => {
     socketInstance: null,
 
     fetchHistory: async (
-      collection,
-      page = 1,
-      limit = 5,
-      eventType = "",
-      contractAddress = ""
+      collection: string,
+      page: number = 1,
+      limit: number = 10,
+      eventType: string = "",
+      contractAddress: string = "",
+      userAddress: string = "",
+      startDate: string = "",
+      endDate: string = ""
     ) => {
+      set({ loading: true });
+    
+      try {
+        let url = "http://localhost:8080/api/events";
+
+        let params: Record<string, string | number> = {
+          collection,
+          page,
+          limit,
+          eventType,
+          contractAddress,
+          startDate,
+          endDate,
+        };
+    
+
+        if (userAddress) {
+          url = `http://localhost:8080/api/events/${userAddress}`;
+        } else {
+          params["userAddress"] = userAddress;
+        }
+    
+        const response = await axios.get(url, { params });
+    
+        const totalItems = response.data.total ?? 0;
+        const totalPages = totalItems > 0 ? Math.ceil(totalItems / limit) : 1;
+    
+        set({
+          historyEvents: response.data.events ?? [],
+          totalPages,
+        });
+      } catch (error) {
+        console.error("❌ Erro ao buscar histórico:", error);
+        set({ historyEvents: [], totalPages: 1 });
+      } finally {
+        set({ loading: false });
+      }
+    },
+
+    fetchHistoryByAddress: async (userAddress, page = 1, limit = 10, startDate = "", endDate = "") => {
       set({ loading: true });
 
       try {
-        const response = await axios.get("http://localhost:8080/api/events", {
-          params: { collection, page, limit, eventType, contractAddress },
+        const response = await axios.get(`http://localhost:8080/api/events/${userAddress}`, {
+          params: { page, limit, startDate, endDate },
         });
 
         const totalItems = response.data.total ?? 0;
         const totalPages = totalItems > 0 ? Math.ceil(totalItems / limit) : 1;
 
         set({
-          historyEvents: response.data.events,
+          historyEvents: response.data.events ?? [],
           totalPages,
         });
       } catch (error) {
-        console.error("❌ Erro ao buscar histórico:", error);
-        set({ totalPages: 1 });
+        console.error("❌ Erro ao buscar eventos por endereço:", error);
+        set({ historyEvents: [], totalPages: 1 });
       } finally {
         set({ loading: false });
       }

@@ -8,11 +8,11 @@ import { useEffect, useRef } from "react";
 
 export const EventList = () => {
   const {
-    realTimeEvents,
+    realTimeEvents = [],
     historyEvents,
-    loading,
-    currentPage,
-    totalPages,
+    loading = false,
+    currentPage = 1,
+    totalPages = 1,
     fetchHistory,
     setCurrentPage,
     connectWebSocket,
@@ -21,7 +21,7 @@ export const EventList = () => {
   const hasConnectedWebSocket = useRef(false);
 
   useEffect(() => {
-    fetchHistory("token_rwa", currentPage, 5 );
+    fetchHistory("token_rwa", currentPage, 5);
   }, [currentPage]);
 
   useEffect(() => {
@@ -49,8 +49,8 @@ export const EventList = () => {
         {loading ? (
           <Text color="gray.500">Carregando histórico...</Text>
         ) : (
-          <VStack spacing={4} align="stretch" overflowY="auto" flex="1">
-            {historyEvents.length > 0 ? (
+          <VStack spacing={2} align="stretch" overflowY="auto" flex="1" maxH="55vh">
+            {Array.isArray(historyEvents) && historyEvents.length > 0 ? ( 
               historyEvents.map((event) => <EventItem key={event.transactionHash} event={event} />)
             ) : (
               <Text color="gray.500">Nenhum evento encontrado.</Text>
@@ -58,7 +58,6 @@ export const EventList = () => {
           </VStack>
         )}
 
-        {/* 🔥 Paginação Corrigida */}
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       </Box>
     </TabSwitcher>

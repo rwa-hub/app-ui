@@ -1,4 +1,4 @@
-import { Tabs, TabList, Tab, TabPanels, TabPanel, Box } from "@chakra-ui/react";
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
 interface TabSwitcherProps {
@@ -9,7 +9,7 @@ interface TabSwitcherProps {
 export const TabSwitcher = ({ tabs, children }: TabSwitcherProps) => {
   return (
     <Tabs variant="soft-rounded" colorScheme="blue" isFitted>
-      <TabList bg="var(--background-medium)" p={2} borderRadius="lg">
+      <TabList bg="var(--background-medium)" p={0} borderRadius="lg">
         {tabs.map((tab, index) => (
           <Tab
           p={2}
