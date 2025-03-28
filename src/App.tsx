@@ -6,9 +6,10 @@ import { Agents } from "@/pages/Agents";
 import { KYC } from "@/pages/KYC";
 import { Home } from "@/pages/Home";
 import { About } from "@/pages/SidebarPages/About";
-import { RWA } from "@/pages/SidebarPages/RWA";
+
 import { Docs } from "./pages/SidebarPages";
 import { Compliance } from "./pages/Compliance";
+import { RWAInfo } from "./pages/SidebarPages/RWAInfo";
 
 
 function App() {
@@ -20,8 +21,8 @@ function App() {
 
         {/* Dashboard é o layout principal que contém Sidebar e Header */}
         <Route path="/dashboard" element={<Dashboard />}>
-          <Route path="rwa" element={<RWA />} />
           <Route path="about" element={<About />} />
+          <Route path="rwa-info" element={<RWAInfo />} />
           <Route path="docs" element={<Docs />} />
           <Route path="events" element={<EventList />} />
           <Route path="tokens" element={<Token />} />

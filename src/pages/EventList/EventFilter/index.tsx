@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useEventStore } from "@/store/useEventStore";
 import {
   Box,
@@ -15,21 +15,101 @@ import {
 import { FiSliders } from "react-icons/fi";
 import { FilterModal } from "./FilterModal";
 
-const eventTypes = [
-  "AgentAdded",
-  "Transfer",
-  "BuyerApproved",
-  "AddressFrozen",
-  "Unpaused",
-  "AgentRemoved",
-];
+// Definindo o tipo para as coleções de contratos
+type ContractCollection = 
+  | "financial_compliance" 
+  | "identity_registry" 
+  | "identity_registry_storage" 
+  | "modular_compliance" 
+  | "registry_md_compliance" 
+  | "token_rwa";
 
-const contracts = [
+// Mapeamento de eventos por tipo de contrato
+const contractEvents: Record<ContractCollection, string[]> = {
+  financial_compliance: [
+    "BuyerApproved",
+    "ComplianceBound",
+    "ComplianceCheckFailedEvent",
+    "ComplianceCheckPassed",
+    "ComplianceUnbound",
+    "Initialized",
+    "OwnershipTransferred"
+  ],
+  identity_registry: [
+    "AgentAdded",
+    "AgentRemoved",
+    "ClaimTopicsRegistrySet",
+    "CountryUpdated",
+    "IdentityRegistered",
+    "IdentityRemoved",
+    "IdentityStorageSet",
+    "IdentityUpdated",
+    "Initialized",
+    "OwnershipTransferred",
+    "TrustedIssuersRegistrySet"
+  ],
+  identity_registry_storage: [
+    "AgentAdded",
+    "AgentRemoved",
+    "CountryModified",
+    "IdentityModified",
+    "IdentityRegistryBound",
+    "IdentityRegistryUnbound",
+    "IdentityStored",
+    "IdentityUnstored",
+    "Initialized",
+    "OwnershipTransferred"
+  ],
+  modular_compliance: [
+    "Initialized",
+    "ModuleAdded",
+    "ModuleInteraction",
+    "ModuleRemoved",
+    "OwnershipTransferred",
+    "TokenBound",
+    "TokenUnbound"
+  ],
+  registry_md_compliance: [
+    "AverbacaoAdded",
+    "ComplianceBound",
+    "ComplianceUnbound",
+    "Initialized",
+    "OwnershipTransferred",
+    "PropertyRegistered",
+    "PropertyTransferred",
+    "PropertyUpdated"
+  ],
+  token_rwa: [
+    "Approval",
+    "AuthorizedOperator",
+    "Burned",
+    "ComplianceAdded",
+    "ComplianceRemoved",
+    "ControllerTransfer",
+    "ControllerRedemption",
+    "Initialized",
+    "Minted",
+    "OwnershipTransferred",
+    "Paused",
+    "RevokedOperator",
+    "Transfer",
+    "Unpaused"
+  ]
+};
+
+// Definindo o tipo para os contratos
+interface Contract {
+  name: string;
+  address: string;
+  collection: ContractCollection;
+}
+
+const contracts: Contract[] = [
   { name: "Trusted Issuer Registry", address: import.meta.env.VITE_TRUSTED_ISSUER_REGISTRY_ADDRESS, collection: "financial_compliance" },
   { name: "Identity Registry", address: import.meta.env.VITE_IDENTITY_REGISTRY_ADDRESS, collection: "identity_registry" },
   { name: "Token", address: import.meta.env.VITE_TOKEN_ADDRESS, collection: "token_rwa" },
   { name: "Financial Compliance", address: import.meta.env.VITE_FINANCIAL_RWA_ADDRESS, collection: "financial_compliance" },
-].filter((contract) => contract.address);
+].filter((contract) => contract.address) as Contract[];
 
 export const EventFilter = () => {
   const fetchHistory = useEventStore((state) => state.fetchHistory);
@@ -37,10 +117,16 @@ export const EventFilter = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [eventType, setEventType] = useState("");
-  const [selectedContract, setSelectedContract] = useState<{ name: string; address: string; collection: string } | null>(null);
+  const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
   const [userAddress, setUserAddress] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
+
+  const availableEvents = useMemo(() => {
+    if (!selectedContract) return [];
+    return contractEvents[selectedContract.collection] || [];
+  }, [selectedContract]);
 
   const applyFilters = () => {
     if (userAddress && !selectedContract) {
@@ -62,6 +148,13 @@ export const EventFilter = () => {
     fetchHistory("token_rwa", 1, 10);
   };
 
+  // Limpar o tipo de evento quando o contrato muda
+  const handleContractChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const contract = contracts.find((c) => c.address === e.target.value);
+    setSelectedContract(contract || null);
+    setEventType("");
+  };
+
   return (
     <Box p={2} bg="var(--background-dark)" borderRadius="lg" boxShadow="0px 0px 10px var(--accent)" mb={2} position="sticky" top="0" zIndex="1000">
       {/* 🔹 Linha 1 - Filtros principais */}
@@ -69,10 +162,7 @@ export const EventFilter = () => {
         <Select
           placeholder="Contrato"
           value={selectedContract?.address || ""}
-          onChange={(e) => {
-            const contract = contracts.find((c) => c.address === e.target.value);
-            setSelectedContract(contract || null);
-          }}
+          onChange={handleContractChange}
           bg="var(--background-medium-opacity-1)"
           color="white"
           w="180px"
@@ -90,10 +180,10 @@ export const EventFilter = () => {
           onChange={(e) => setEventType(e.target.value)}
           bg="var(--background-medium-opacity-1)"
           color="white"
-          w="140px"
+          w="180px"
           isDisabled={!selectedContract}
         >
-          {eventTypes.map((type) => (
+          {availableEvents.map((type: string) => (
             <option key={type} value={type}>
               {type}
             </option>
@@ -124,6 +214,23 @@ export const EventFilter = () => {
           <Tag size="sm" bg="linear-gradient(135deg, #00ffff, #00ff7f)" color="black" boxShadow="0px 0px 8px #00ffff">
             <TagLabel>{userAddress.slice(0, 6)}...{userAddress.slice(-4)}</TagLabel>
             <TagCloseButton onClick={() => setUserAddress("")} />
+          </Tag>
+        )}
+
+        {selectedContract && (
+          <Tag size="sm" bg="linear-gradient(135deg, #ff00ff, #9932cc)" color="black" boxShadow="0px 0px 8px #ff00ff">
+            <TagLabel>{selectedContract.name}</TagLabel>
+            <TagCloseButton onClick={() => {
+              setSelectedContract(null);
+              setEventType("");
+            }} />
+          </Tag>
+        )}
+
+        {eventType && (
+          <Tag size="sm" bg="linear-gradient(135deg, #ff8c00, #ff4500)" color="black" boxShadow="0px 0px 8px #ff8c00">
+            <TagLabel>Evento: {eventType}</TagLabel>
+            <TagCloseButton onClick={() => setEventType("")} />
           </Tag>
         )}
 

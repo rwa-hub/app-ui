@@ -58,19 +58,18 @@ export const useEventStore = create<EventStore>((set, get) => {
 
     fetchHistory: async (
       collection: string,
-      page: number = 1,
-      limit: number = 10,
-      eventType: string = "",
-      contractAddress: string = "",
-      userAddress: string = "",
-      startDate: string = "",
-      endDate: string = ""
+      page = 1,
+      limit = 10,
+      eventType = "",
+      contractAddress = "",
+      userAddress = "",
+      startDate = "",
+      endDate = ""
     ) => {
       set({ loading: true });
-    
+  
       try {
         let url = "http://localhost:8080/api/events";
-
         let params: Record<string, string | number> = {
           collection,
           page,
@@ -80,22 +79,22 @@ export const useEventStore = create<EventStore>((set, get) => {
           startDate,
           endDate,
         };
-    
-
+  
         if (userAddress) {
           url = `http://localhost:8080/api/events/${userAddress}`;
         } else {
           params["userAddress"] = userAddress;
         }
-    
+  
         const response = await axios.get(url, { params });
-    
+  
         const totalItems = response.data.total ?? 0;
         const totalPages = totalItems > 0 ? Math.ceil(totalItems / limit) : 1;
-    
+  
         set({
           historyEvents: response.data.events ?? [],
           totalPages,
+          currentPage: page, 
         });
       } catch (error) {
         console.error("❌ Erro ao buscar histórico:", error);
@@ -104,6 +103,9 @@ export const useEventStore = create<EventStore>((set, get) => {
         set({ loading: false });
       }
     },
+  
+
+ 
 
     fetchHistoryByAddress: async (userAddress, page = 1, limit = 10, startDate = "", endDate = "") => {
       set({ loading: true });
@@ -135,8 +137,12 @@ export const useEventStore = create<EventStore>((set, get) => {
 
     setCurrentPage: (page: number) => {
       set({ currentPage: page });
-      const { eventType, contractAddress } = get();
-      get().fetchHistory("token_rwa", page, 5, eventType, contractAddress);
+  
+      const { eventType, contractAddress, historyEvents } = get();
+  
+      if (historyEvents.length > 0) {
+        get().fetchHistory("token_rwa", page, 10, eventType, contractAddress);
+      }
     },
 
     addRealTimeEvent: (event: EventData) => {

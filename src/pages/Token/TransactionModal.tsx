@@ -35,8 +35,6 @@ import {
     functionInputs,
     handleTransaction,
   }: TransactionModalProps) => {
-
-    
     return (
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay bg="rgba(0, 0, 0, 0.8)" backdropFilter="blur(8px)" />

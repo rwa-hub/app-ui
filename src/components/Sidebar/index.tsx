@@ -27,7 +27,7 @@ export const Sidebar = () => {
       <VStack p={4} spacing={3} align="start" flex="1">
         <Image src={logo} alt="Logo" w="180px" mb={4} />
 
-        <NavLink to="/dashboard/rwa">
+        <NavLink to="/dashboard/rwa-info">
           <Button variant="ghost" colorScheme="blue" w="full" leftIcon={<Icon as={Home} />}>
             RWA
           </Button>

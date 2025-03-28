@@ -43,13 +43,13 @@ export const EventList = () => {
         </VStack>
       </Box>
 
-      <Box flex="1" p={2} borderRadius="md" display="flex" flexDirection="column" h="80vh">
+      <Box flex="1" p={2} borderRadius="md" display="flex" flexDirection="column" h="80vh" maxH="80vh" >
         <EventFilter />
 
         {loading ? (
           <Text color="gray.500">Carregando histórico...</Text>
         ) : (
-          <VStack spacing={2} align="stretch" overflowY="auto" flex="1" maxH="55vh">
+          <VStack spacing={2} align="stretch" overflowY="auto" flex="1" maxH="55vh" pt={5}>
             {Array.isArray(historyEvents) && historyEvents.length > 0 ? ( 
               historyEvents.map((event) => <EventItem key={event.transactionHash} event={event} />)
             ) : (

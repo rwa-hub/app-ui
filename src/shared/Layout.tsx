@@ -7,10 +7,9 @@ export const Dashboard = () => {
   return (
     <Flex direction="row" minH="100vh">
       <Sidebar />
-      <Flex direction="column" flex="1"  minH="100vh">
+      <Flex direction="column" flex="1" height="100vh" overflow="hidden">
         <Header />
-
-        <Box flex="1" p={6} display="flex" flexDirection="column" overflow="hidden">
+        <Box flex="1" overflowY="auto" p={6}>
           <Outlet />
         </Box>
       </Flex>
