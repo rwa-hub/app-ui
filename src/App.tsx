@@ -10,6 +10,7 @@ import { About } from "@/pages/SidebarPages/About";
 import { Docs } from "./pages/SidebarPages";
 import { Compliance } from "./pages/Compliance";
 import { RWAInfo } from "./pages/SidebarPages/RWAInfo";
+import { Register } from "./pages/Register";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="agents" element={<Agents />} />
           <Route path="compliance" element={<Compliance />} />
           <Route path="kyc" element={<KYC />} />
+          <Route path="register" element={<Register />} />
         </Route>
 
         {/* Página 404 caso a rota não exista */}

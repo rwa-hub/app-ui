@@ -21,8 +21,6 @@ import { NeonLoader } from "@/components/NeonLoader";
 import NeonToast from "@/components/NeonToast";
 import { useEventStore } from "@/store/useEventStore";
 
-
-
 const contracts = {
   kyc: {
     name: "Identity Registry (KYC)",

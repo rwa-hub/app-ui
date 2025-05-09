@@ -6,6 +6,10 @@ import { statusColors } from "@/utils/toast-neon";
 
 const { toast } = createStandaloneToast();
 
+// Configurações de ambiente
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8082';
+const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8082/ws';
+
 interface EventStore {
   realTimeEvents: EventData[];
   historyEvents: EventData[];
@@ -69,7 +73,7 @@ export const useEventStore = create<EventStore>((set, get) => {
       set({ loading: true });
   
       try {
-        let url = "http://localhost:8080/api/events";
+        let url = `${API_URL}/api/events`;
         let params: Record<string, string | number> = {
           collection,
           page,
@@ -81,7 +85,7 @@ export const useEventStore = create<EventStore>((set, get) => {
         };
   
         if (userAddress) {
-          url = `http://localhost:8080/api/events/${userAddress}`;
+          url = `${API_URL}/api/events/${userAddress}`;
         } else {
           params["userAddress"] = userAddress;
         }
@@ -111,7 +115,7 @@ export const useEventStore = create<EventStore>((set, get) => {
       set({ loading: true });
 
       try {
-        const response = await axios.get(`http://localhost:8080/api/events/${userAddress}`, {
+        const response = await axios.get(`${API_URL}/api/events/${userAddress}`, {
           params: { page, limit, startDate, endDate },
         });
 
@@ -185,7 +189,7 @@ export const useEventStore = create<EventStore>((set, get) => {
 
       console.log("🔌 Tentando conectar ao WebSocket...");
 
-      wsInstance = new WebSocket("ws://localhost:8080/ws");
+      wsInstance = new WebSocket(WS_URL);
       set({ socketInstance: wsInstance });
 
       wsInstance.onopen = () => {
