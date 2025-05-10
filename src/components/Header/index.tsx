@@ -41,10 +41,10 @@ export const Header = () => {
             <Text color="var(--text-primary)">Agentes</Text>
           </HStack>
         </NavLink>
-        <NavLink to="/dashboard/compliance">  
+        <NavLink to="/dashboard/register">  
           <HStack cursor="pointer">
             <Icon as={FiCheckCircle} boxSize={5} color="var(--text-primary)" />
-            <Text color="var(--text-primary)">Compliance</Text>
+            <Text color="var(--text-primary)">Registrar</Text>
           </HStack>
         </NavLink>
         {/* <NavLink to="/dashboard/approve-buyer">

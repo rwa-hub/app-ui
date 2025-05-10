@@ -1,0 +1,24 @@
+# Use uma imagem Node LTS
+FROM node:18-alpine
+
+# Instala dependências necessárias
+RUN apk add --no-cache \
+    make \
+    g++ \
+    python3 \
+    git
+
+# Define o diretório de trabalho
+WORKDIR /app
+
+# Copia os arquivos de configuração
+COPY package.json yarn.lock ./
+
+# Instala as dependências
+RUN yarn install
+
+# Expõe a porta do Vite
+EXPOSE 3000
+
+# Comando para desenvolvimento com hot-reload
+CMD ["yarn", "dev", "--host"] 
